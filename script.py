@@ -10,24 +10,29 @@ file.write(f"\n Time of starting the script " + local_time + "\n")
 tick=1 #variable holding tick number
 data=[] #initialazing empty list
 
-
-while (tick<=10): # loop by default will gather data for 10 seconds
-    cpu = psutil.cpu_percent(interval=1)
+while (tick<=10): # loop by default will gather data for 5 ticks, tick=15seconds
+    cpu = psutil.cpu_percent(interval=1)#this variable collects data about cpu usage by calculating it over 1-second interval
     file.write(f"CPU usage:{cpu}% \n") 
-    #this variable collects data about cpu usage by calculating 
-    #it over 1-second interval
-
-    memory = psutil.virtual_memory()
+    
+    memory = psutil.virtual_memory()#this variable collects data about memory usage
     file.write(f"Memory Usage: {memory.percent}% \n")
-    #this variable collects data about memory usage
+    memory_MB = psutil.virtual_memory().used / (1024 ** 2)
+    memory_MB = round(memory_MB)
 
-    disk = psutil.disk_usage('/')
+    disk = psutil.disk_usage('/')#this variable collects data about disk usage
     file.write(f"Disk Usage: {disk.percent}% \n")
-    #this variable collects data about disk usage
-    data.append([cpu, memory.percent, disk.percent]) #appends all data to list
+    disk_MB = psutil.disk_usage('/').used / (1024 ** 2)
+    disk_MB = round(disk_MB,2)
+
+    Timestamp=pd.Timestamp.now().strftime('%H:%M:%S')
+    data.append([Timestamp,cpu, memory.percent, disk.percent,memory_MB,disk_MB]) #appends all data to list
 
     tick = tick +1 #incrementing tick
-    time.sleep(1) #Pause for 5 second
-df1 = pd.DataFrame(data, columns=['Cpu Usage (%)','Memory Usage (%)','Disk usage (%)']) # this variable holds system monitor data
+    time.sleep(1) #Pause
+
+df1 = pd.DataFrame(data,columns=['Timestamp','Cpu Usage (%)','Mem Usage (%)','Disk usage (%)','Mem Usage (MB)','Disk Usage (MB)'])
+# this variable holds system monitor data
+df1.set_index('Timestamp', inplace=True)
 print(df1) #printing table in the terminal
 file.close()
+
