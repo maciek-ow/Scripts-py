@@ -22,7 +22,7 @@ while (tick<=60): # loop by default will gather data for 5 ticks, tick=15seconds
     disk = psutil.disk_usage('/')#this variable collects data about disk usage
     file.write(f"Disk Usage: {disk.percent}% \n")
     disk_MB = psutil.disk_usage('/').used / (1024 ** 2) #this variable holds disk usage in Bytes and its converteted to MegaBytes afterwads
-    disk_MB = round(disk_MB,2)
+    disk_MB = round(disk_MB,2) #
 
     Timestamp=pd.Timestamp.now().strftime('%H:%M:%S')
     data.append([Timestamp,cpu, memory.percent, disk.percent,memory_MB,disk_MB]) #appends all data to list
